@@ -3,6 +3,7 @@ package com.example.springpitfalls;
 import com.example.springpitfalls.repository.PaymentRepository;
 import com.example.springpitfalls.service.CheckoutService;
 import com.example.springpitfalls.service.PaymentService;
+import com.example.springpitfalls.service.SelfCallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ public class ExperimentsRunner implements CommandLineRunner {
     private final CheckoutService checkoutService;
     private final PaymentService paymentService;
     private final PaymentRepository repository;
+    private final SelfCallService selfCallService;
 
     public void experiment1() {
         checkoutService.printKey();
@@ -39,8 +41,21 @@ public class ExperimentsRunner implements CommandLineRunner {
         System.out.println("count после: " + repository.count());
     }
 
+    public void experiment3() {
+        System.out.println("count до: " + repository.count());
+
+        try {
+            selfCallService.outer(99L);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("count после outer: " + repository.count());
+
+        System.out.println(selfCallService.getClass());
+    }
+
     @Override
     public void run(String... args) throws Exception {
-        experiment2();
+        experiment3();
     }
 }
